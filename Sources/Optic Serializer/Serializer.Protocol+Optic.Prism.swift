@@ -15,7 +15,7 @@ extension Serializer::Serializer.`Protocol` {
         >.Prism
     ) -> Serializer::Serializer.Map<Self, Replacement>
     where Output == Target {
-        map { replacement in prism.embed(replacement) }
+        contramap { replacement in prism.embed(copy replacement) }
     }
 
     @inlinable
@@ -28,7 +28,7 @@ extension Serializer::Serializer.`Protocol` {
         >.Prism
     ) -> Serializer::Serializer.Map<Self, Source>
     where Output == Either<Target, Focus> {
-        map { source in prism.match(source) }
+        contramap { source in prism.match(copy source) }
     }
 
     @_disfavoredOverload
@@ -43,8 +43,8 @@ extension Serializer::Serializer.`Protocol` {
         failure transform: @escaping (consuming Target) -> MatchFailure
     ) -> Serializer::Serializer.Map<Self, Source>.Throwing<MatchFailure>
     where Output == Focus {
-        tryMap { source throws(MatchFailure) in
-            switch prism.match(source) {
+        contramap { source throws(MatchFailure) in
+            switch prism.match(copy source) {
             case .left(let target):
                 throw transform(target)
             case .right(let focus):

@@ -19,6 +19,10 @@ let package = Package(
     ],
     dependencies: [
         .package(
+            url: "https://github.com/swift-atoms/swift-either.git",
+            branch: "main"
+        ),
+        .package(
             url: "https://github.com/swift-atoms/swift-optic.git",
             branch: "main"
         ),
@@ -31,6 +35,7 @@ let package = Package(
         .target(
             name: "Optic Serializer",
             dependencies: [
+                .product(name: "Either", package: "swift-either"),
                 .product(name: "Optic", package: "swift-optic"),
                 .product(name: "Serializer", package: "swift-serializer"),
                 .product(name: "Serializer Map", package: "swift-serializer"),
@@ -39,7 +44,11 @@ let package = Package(
         .testTarget(
             name: "Optic Serializer Tests",
             dependencies: [
-                .target(name: "Optic Serializer")
+                .target(name: "Optic Serializer"),
+                .product(name: "Either", package: "swift-either"),
+                .product(name: "Optic", package: "swift-optic"),
+                .product(name: "Serializer", package: "swift-serializer"),
+                .product(name: "Serializer Map", package: "swift-serializer"),
             ]
         ),
     ],

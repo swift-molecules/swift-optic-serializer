@@ -14,6 +14,6 @@ extension Serializer::Serializer.`Protocol` {
         >.Isomorphism
     ) -> Serializer::Serializer.Map<Self, Replacement>
     where Output == Target {
-        map { replacement in isomorphism.backward(replacement) }
+        contramap { replacement in isomorphism.backward(copy replacement) }
     }
 }

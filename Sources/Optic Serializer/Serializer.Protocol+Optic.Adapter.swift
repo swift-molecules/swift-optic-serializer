@@ -14,7 +14,7 @@ extension Serializer::Serializer.`Protocol` {
         >.Adapter<ForwardFailure, Never>
     ) -> Serializer::Serializer.Map<Self, Replacement>
     where Output == Target {
-        map { replacement in adapter.backward(replacement) }
+        contramap { replacement in adapter.backward(copy replacement) }
     }
 
     @_disfavoredOverload
@@ -35,8 +35,8 @@ extension Serializer::Serializer.`Protocol` {
         >.Adapter<ForwardFailure, BackwardFailure>
     ) -> Serializer::Serializer.Map<Self, Replacement>.Throwing<BackwardFailure>
     where Output == Target {
-        tryMap { replacement throws(BackwardFailure) in
-            try adapter.backward(replacement)
+        contramap { replacement throws(BackwardFailure) in
+            try adapter.backward(copy replacement)
         }
     }
 }

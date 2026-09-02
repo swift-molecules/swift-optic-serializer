@@ -1,4 +1,8 @@
+import Either
+import Optic
 import Optic_Serializer
+import Serializer
+import Serializer_Map
 import Testing
 
 @Suite
@@ -149,7 +153,6 @@ private struct Text: Serializer.`Protocol` {
     typealias Output = String
     typealias Buffer = [UInt8]
     typealias Failure = Never
-    typealias Body = Never
 
     borrowing func serialize(_ output: String, into buffer: inout [UInt8]) {
         buffer.append(contentsOf: output.utf8)
@@ -160,7 +163,6 @@ private struct Decimal: Serializer.`Protocol` {
     typealias Output = Int
     typealias Buffer = [UInt8]
     typealias Failure = Never
-    typealias Body = Never
 
     borrowing func serialize(_ output: Int, into buffer: inout [UInt8]) {
         buffer.append(contentsOf: String(output).utf8)
@@ -171,7 +173,6 @@ private struct NodeText: Serializer.`Protocol` {
     typealias Output = Node
     typealias Buffer = [UInt8]
     typealias Failure = Never
-    typealias Body = Never
 
     borrowing func serialize(_ output: Node, into buffer: inout [UInt8]) {
         buffer.append(contentsOf: describe(output).utf8)
@@ -182,7 +183,6 @@ private struct BranchText: Serializer.`Protocol` {
     typealias Output = Either<Node, Int>
     typealias Buffer = [UInt8]
     typealias Failure = Never
-    typealias Body = Never
 
     borrowing func serialize(_ output: Either<Node, Int>, into buffer: inout [UInt8]) {
         switch output {
