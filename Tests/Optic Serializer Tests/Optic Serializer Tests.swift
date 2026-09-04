@@ -113,32 +113,40 @@ private enum BackwardFailure: Error, Equatable {
     case negative
 }
 
-private let decimal = Optic<String, String, Int, Int>.Isomorphism(
-    forward: { Int($0) ?? 0 },
-    backward: { String($0) }
-)
-
-private let totalAdapter = Optic<String, String, Int, Int>.Adapter<Never, Never>(
-    forward: { Int($0) ?? 0 },
-    backward: { String($0) }
-)
-
-private let nonNegativeAdapter = Optic<String, String, Int, Int>
-    .Adapter<Never, BackwardFailure>(
+private var decimal: Optic<String, String, Int, Int>.Isomorphism {
+    Optic<String, String, Int, Int>.Isomorphism(
         forward: { Int($0) ?? 0 },
-        backward: { value throws(BackwardFailure) in
-            guard value >= 0 else { throw .negative }
-            return String(value)
+        backward: { String($0) }
+    )
+}
+
+private var totalAdapter: Optic<String, String, Int, Int>.Adapter<Never, Never> {
+    Optic<String, String, Int, Int>.Adapter<Never, Never>(
+        forward: { Int($0) ?? 0 },
+        backward: { String($0) }
+    )
+}
+
+private var nonNegativeAdapter: Optic<String, String, Int, Int>.Adapter<Never, BackwardFailure> {
+    Optic<String, String, Int, Int>
+        .Adapter<Never, BackwardFailure>(
+            forward: { Int($0) ?? 0 },
+            backward: { value throws(BackwardFailure) in
+                guard value >= 0 else { throw .negative }
+                return String(value)
+            }
+        )
+}
+
+private var leaf: Optic<Node, Node, Int, Int>.Prism {
+    Optic<Node, Node, Int, Int>.Prism(
+        embed: Node.leaf,
+        extract: { node in
+            guard case .leaf(let value) = node else { return nil }
+            return value
         }
     )
-
-private let leaf = Optic<Node, Node, Int, Int>.Prism(
-    embed: Node.leaf,
-    extract: { node in
-        guard case .leaf(let value) = node else { return nil }
-        return value
-    }
-)
+}
 
 private func describe(_ node: Node) -> String {
     switch node {
